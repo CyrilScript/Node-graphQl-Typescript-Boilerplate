@@ -1,0 +1,36 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.1
+    
+    - name : Installing Dependencies 
+      run : npm install
+      
+    - name : Building Project
+      run : npm run build
+        
+    - name : Cleaning Repository
+      run : git push origin --delete build
+      
+    - name: Committing Changes
+      run: | 
+        git config --global user.email "smith.gajjar@gmail.com"
+        git config --global user.name "Smith Gajjar"
+        git fetch
+        git checkout --orphan build
+        git rm -rf .
+        git add build 
+        git commit -m "New Build"
+        git push --set-upstream origin build
